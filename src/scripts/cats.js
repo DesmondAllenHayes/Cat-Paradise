@@ -31,6 +31,7 @@ class CatManager {
         
         this.catContainer.appendChild(cat);
         this.setupCatClickHandler(cat);
+        this.setupCatHoverHandler(cat);
     }
 
     setupCatClickHandler(cat) {
@@ -90,6 +91,32 @@ class CatManager {
         const milestones = [10, 50, 100, 500, 1000];
         if (milestones.includes(this.clickCount)) {
             this.game.triggerMystery('clickMilestone', this.clickCount);
+        }
+    }
+
+    setupCatHoverHandler(cat) {
+        const catImg = cat.querySelector('img');
+        
+        // Hover in - start perking up animation
+        cat.addEventListener('mouseenter', () => {
+            this.startHoverAnimation(catImg, true);
+        });
+        
+        // Hover out - return to normal
+        cat.addEventListener('mouseleave', () => {
+            this.startHoverAnimation(catImg, false);
+        });
+    }
+
+    startHoverAnimation(catImg, isHovering) {
+        if (isHovering) {
+            // Change to perked up cat image
+            catImg.src = 'assets/cat-perked.png';
+            catImg.style.transition = 'all 0.3s ease';
+        } else {
+            // Return to normal cat image
+            catImg.src = 'assets/cat.png';
+            catImg.style.transition = 'all 0.3s ease';
         }
     }
 }
