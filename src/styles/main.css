@@ -58,8 +58,6 @@ body {
 }
 
 .cat-container {
-    cursor: pointer;
-    transition: transform 0.2s ease;
     position: absolute;
     /* Position the cat on the table - adjust these values to match your background */
     left: 47%;
@@ -67,9 +65,7 @@ body {
     transform: translateX(-50%);
 }
 
-.cat-container:hover {
-    /* Removed scale transform for more statue-like feel */
-}
+/* Cat container no longer needs hover effects */
 
 .cat {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -84,6 +80,7 @@ body {
     -webkit-user-drag: none;
     transition: all 0.4s ease;
     filter: brightness(1) contrast(1.1);
+    cursor: pointer;
 }
 
 .cat:hover {
