@@ -120,8 +120,7 @@ class CatManager {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         
-        // Wait for image to load
-        catImg.onload = () => {
+        const setupCanvas = () => {
             canvas.width = catImg.naturalWidth;
             canvas.height = catImg.naturalHeight;
             ctx.drawImage(catImg, 0, 0);
@@ -131,6 +130,14 @@ class CatManager {
             this.imageWidth = canvas.width;
             this.imageHeight = canvas.height;
         };
+        
+        // Check if image is already loaded
+        if (catImg.complete && catImg.naturalWidth > 0) {
+            setupCanvas();
+        } else {
+            // Wait for image to load
+            catImg.onload = setupCanvas;
+        }
     }
 
     handlePixelHover(event, catImg) {
@@ -146,12 +153,19 @@ class CatManager {
         
         // Check bounds
         if (imgX < 0 || imgX >= this.imageWidth || imgY < 0 || imgY >= this.imageHeight) {
+            if (this.isHovering) {
+                this.isHovering = false;
+                this.startHoverAnimation(catImg, false);
+            }
             return;
         }
         
         // Get pixel alpha value
         const index = (imgY * this.imageWidth + imgX) * 4 + 3; // Alpha channel
         const alpha = this.imageData.data[index];
+        
+        // Debug: log alpha values (remove this later)
+        console.log(`Pixel at (${imgX}, ${imgY}): alpha = ${alpha}`);
         
         // Only trigger hover if pixel is visible (alpha > 0)
         if (alpha > 0) {
