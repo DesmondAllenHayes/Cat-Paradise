@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="200" height="200" version="1.1" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <!-- Cat body -->
-    <ellipse cx="100" cy="110" rx="70" ry="60" fill="#f4c6d0"/>
+    <!-- Pedestal base -->
+    <path d="M40 180h120c2 0 4-2 4-4l-10-30H46l-10 30c0 2 2 4 4 4z" fill="#8b8b8b"/>
+    <path d="M46 146h108l-5-10H51z" fill="#787878"/>
+    
+    <!-- Cat body - stone texture base -->
+    <path d="M65 145c0-20 15-40 35-40s35 20 35 40z" fill="#a8a8a8"/>
+    
+    <!-- Sitting cat body -->
+    <path d="M70 110c-5 15-5 35 0 35s10-15 10-35z" fill="#9a9a9a"/> <!-- Left leg -->
+    <path d="M130 110c5 15 5 35 0 35s-10-15-10-35z" fill="#9a9a9a"/> <!-- Right leg -->
+    
+    <!-- Cat torso -->
+    <ellipse cx="100" cy="95" rx="35" ry="30" fill="#b0b0b0"/>
+    
+    <!-- Tail curled -->
+    <path d="M135 95c10 0 20 10 20 20s-10 15-20 10c5-5 10-15 0-30z" fill="#a0a0a0"/>
     
     <!-- Cat head -->
-    <circle cx="100" cy="90" r="50" fill="#f4c6d0"/>
+    <circle cx="100" cy="70" r="25" fill="#b8b8b8"/>
     
-    <!-- Cat ears -->
-    <path d="M60 60l-15-25 30 15z" fill="#f4c6d0"/>
-    <path d="M140 60l15-25-30 15z" fill="#f4c6d0"/>
-    <path d="M60 62l-10-20 20 10z" fill="#ffb5c2"/>
-    <path d="M140 62l10-20-20 10z" fill="#ffb5c2"/>
+    <!-- Cat ears - geometric and angular -->
+    <path d="M80 55l-10-15 20 5z" fill="#a0a0a0"/>
+    <path d="M120 55l10-15-20 5z" fill="#a0a0a0"/>
     
-    <!-- Cat face -->
-    <circle cx="80" cy="85" r="10" fill="#ffffff"/> <!-- Left eye white -->
-    <circle cx="120" cy="85" r="10" fill="#ffffff"/> <!-- Right eye white -->
-    <circle cx="80" cy="85" r="5" fill="#000000"/> <!-- Left eye -->
-    <circle cx="120" cy="85" r="5" fill="#000000"/> <!-- Right eye -->
-    
-    <!-- Cute blush -->
-    <circle cx="65" cy="100" r="10" fill="#ffb5c2" opacity="0.5"/>
-    <circle cx="135" cy="100" r="10" fill="#ffb5c2" opacity="0.5"/>
+    <!-- Eyes - ancient and mysterious -->
+    <path d="M90 65l-5 10h10z" fill="#2f2f2f"/> <!-- Left eye -->
+    <path d="M110 65l-5 10h10z" fill="#2f2f2f"/> <!-- Right eye -->
     
     <!-- Nose -->
-    <path d="M95 95l10 5-10 5z" fill="#ffb5c2"/>
+    <path d="M97 75l6 3-6 3z" fill="#808080"/>
     
-    <!-- Mouth -->
-    <path d="M90 105q10 10 20 0" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+    <!-- Stone texture details -->
+    <path d="M70 100q30-5 60 0" fill="none" stroke="#9a9a9a" stroke-width="0.5"/>
+    <path d="M75 90q25-5 50 0" fill="none" stroke="#9a9a9a" stroke-width="0.5"/>
+    <path d="M80 80q20-5 40 0" fill="none" stroke="#9a9a9a" stroke-width="0.5"/>
     
-    <!-- Whiskers -->
-    <line x1="50" y1="95" x2="85" y2="100" stroke="#000000" stroke-width="1"/>
-    <line x1="50" y1="105" x2="85" y2="105" stroke="#000000" stroke-width="1"/>
-    <line x1="50" y1="115" x2="85" y2="110" stroke="#000000" stroke-width="1"/>
-    
-    <line x1="150" y1="95" x2="115" y2="100" stroke="#000000" stroke-width="1"/>
-    <line x1="150" y1="105" x2="115" y2="105" stroke="#000000" stroke-width="1"/>
-    <line x1="150" y1="115" x2="115" y2="110" stroke="#000000" stroke-width="1"/>
+    <!-- Mysterious symbols -->
+    <path d="M60 155h5l-2.5 5z" fill="#505050"/>
+    <path d="M135 155h5l-2.5 5z" fill="#505050"/>
+    <circle cx="100" cy="155" r="2" fill="#505050"/>
 </svg>

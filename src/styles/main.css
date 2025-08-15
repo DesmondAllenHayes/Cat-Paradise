@@ -15,9 +15,24 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background-color: var(--background-color);
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
     color: var(--text-color);
     line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 50%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 50%);
+    pointer-events: none;
 }
 
 .game-container {
@@ -29,11 +44,21 @@ body {
 .game-header {
     text-align: center;
     margin-bottom: 2rem;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    padding: 1rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
 }
 
 .score-container {
     font-size: 1.5rem;
     margin-top: 1rem;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
 }
 
 .game-main {
@@ -55,27 +80,63 @@ body {
 }
 
 .cat {
-    transition: all 0.3s ease;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    position: relative;
+}
+
+.cat::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+    transition: all 0.4s ease;
+    pointer-events: none;
 }
 
 .cat img {
     user-select: none;
     -webkit-user-drag: none;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
+    filter: brightness(1) contrast(1.1);
 }
 
 .cat:hover {
     transform: translateY(-5px);
-    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
+}
+
+.cat:hover::before {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .cat:hover img {
-    filter: brightness(1.05);
+    filter: brightness(1.1) contrast(1.2);
 }
 
 .cat-clicked {
-    animation: click-bounce 0.2s ease;
+    animation: statue-click 0.3s ease;
+}
+
+@keyframes statue-click {
+    0% { 
+        transform: scale(1); 
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
+    }
+    50% { 
+        transform: scale(0.95); 
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+    100% { 
+        transform: scale(1); 
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
+    }
 }
 
 .score-popup {
