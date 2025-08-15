@@ -7,6 +7,7 @@ class CatManager {
         this.cats = [];
         this.catContainer = document.querySelector('.cat-container');
         this.clickCount = 0;
+        this.isHovering = false;
         
         this.init();
     }
@@ -39,17 +40,20 @@ class CatManager {
             // Prevent any default browser behavior
             event.preventDefault();
             
-            // Update the score
-            this.game.updateScore(1);
-            
-            // Increment click count
-            this.clickCount++;
-            
-            // Animate the click
-            this.animateClick(cat);
-            
-            // Check for click milestones
-            this.checkClickMilestones();
+            // Check if clicking on visible pixel
+            if (this.isHovering) {
+                // Update the score
+                this.game.updateScore(1);
+                
+                // Increment click count
+                this.clickCount++;
+                
+                // Animate the click
+                this.animateClick(cat);
+                
+                // Check for click milestones
+                this.checkClickMilestones();
+            }
         });
     }
 
@@ -97,15 +101,70 @@ class CatManager {
     setupCatHoverHandler(cat) {
         const catImg = cat.querySelector('img');
         
-        // Hover in - start perking up animation
-        cat.addEventListener('mouseenter', () => {
-            this.startHoverAnimation(catImg, true);
+        // Create a canvas to detect visible pixels
+        this.setupPixelDetection(catImg);
+        
+        // Use mousemove to check pixel alpha
+        cat.addEventListener('mousemove', (event) => {
+            this.handlePixelHover(event, catImg);
         });
         
-        // Hover out - return to normal
+        // Handle mouse leave
         cat.addEventListener('mouseleave', () => {
             this.startHoverAnimation(catImg, false);
         });
+    }
+
+    setupPixelDetection(catImg) {
+        // Create canvas to analyze image pixels
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Wait for image to load
+        catImg.onload = () => {
+            canvas.width = catImg.naturalWidth;
+            canvas.height = catImg.naturalHeight;
+            ctx.drawImage(catImg, 0, 0);
+            
+            // Store canvas data for pixel checking
+            this.imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            this.imageWidth = canvas.width;
+            this.imageHeight = canvas.height;
+        };
+    }
+
+    handlePixelHover(event, catImg) {
+        if (!this.imageData) return;
+        
+        const rect = catImg.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        
+        // Convert to image coordinates
+        const imgX = Math.floor((x / rect.width) * this.imageWidth);
+        const imgY = Math.floor((y / rect.height) * this.imageHeight);
+        
+        // Check bounds
+        if (imgX < 0 || imgX >= this.imageWidth || imgY < 0 || imgY >= this.imageHeight) {
+            return;
+        }
+        
+        // Get pixel alpha value
+        const index = (imgY * this.imageWidth + imgX) * 4 + 3; // Alpha channel
+        const alpha = this.imageData.data[index];
+        
+        // Only trigger hover if pixel is visible (alpha > 0)
+        if (alpha > 0) {
+            if (!this.isHovering) {
+                this.isHovering = true;
+                this.startHoverAnimation(catImg, true);
+            }
+        } else {
+            if (this.isHovering) {
+                this.isHovering = false;
+                this.startHoverAnimation(catImg, false);
+            }
+        }
     }
 
     startHoverAnimation(catImg, isHovering) {
