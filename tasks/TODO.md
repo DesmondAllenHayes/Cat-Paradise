@@ -5,10 +5,10 @@
   - [x] Create HTML skeleton
   - [x] Set up CSS framework/structure
   - [x] Initialize JavaScript files
-- [ ] Implement core game mechanics
-  - [ ] Create basic cat clicking functionality
-  - [ ] Add click counter
-  - [ ] Implement basic scoring system
+- [x] Implement core game mechanics
+  - [x] Create basic cat clicking functionality
+  - [x] Add click counter
+  - [x] Implement basic scoring system
 
 ## Features to Implement
 - [ ] Core Game Elements
