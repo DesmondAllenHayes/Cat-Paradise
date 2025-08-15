@@ -1,10 +1,10 @@
 # Cat Paradise - Task List
 
 ## High Priority
-- [ ] Set up basic project structure
-  - [ ] Create HTML skeleton
-  - [ ] Set up CSS framework/structure
-  - [ ] Initialize JavaScript files
+- [x] Set up basic project structure
+  - [x] Create HTML skeleton
+  - [x] Set up CSS framework/structure
+  - [x] Initialize JavaScript files
 - [ ] Implement core game mechanics
   - [ ] Create basic cat clicking functionality
   - [ ] Add click counter
