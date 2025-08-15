@@ -47,10 +47,34 @@ body {
 .cat-container {
     cursor: pointer;
     transition: transform 0.2s ease;
+    position: relative;
 }
 
 .cat-container:hover {
     transform: scale(1.05);
+}
+
+.cat {
+    transition: transform 0.2s ease;
+}
+
+.cat img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.cat-clicked {
+    animation: click-bounce 0.2s ease;
+}
+
+.score-popup {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    color: #6B4984;
+    font-size: 1.5rem;
+    font-weight: bold;
+    pointer-events: none;
+    animation: float-up 1s ease-out forwards;
 }
 
 .mysterious-container {
@@ -60,7 +84,24 @@ body {
     height: 100%;
 }
 
-/* Animation classes will be added here */
+/* Animations */
+@keyframes click-bounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+@keyframes float-up {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -150%);
+    }
+}
+
 @keyframes mysteriousGlow {
     0% { opacity: 0; }
     50% { opacity: 0.5; }
