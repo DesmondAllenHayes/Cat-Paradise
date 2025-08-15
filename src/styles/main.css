@@ -69,7 +69,6 @@ body {
 
 .cat {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
     position: relative;
 }
 
@@ -83,9 +82,7 @@ body {
     cursor: pointer;
 }
 
-.cat:hover {
-    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
-}
+/* Hover effects moved to cat img only */
 
 /* Removed hover effect for the removed pseudo-element */
 
@@ -93,24 +90,9 @@ body {
     filter: brightness(1.1) contrast(1.2);
 }
 
-.cat-clicked {
-    animation: statue-click 0.3s ease;
-}
+/* Click animation handled by JavaScript */
 
-@keyframes statue-click {
-    0% { 
-        transform: scale(1); 
-        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
-    }
-    50% { 
-        transform: scale(0.95); 
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    }
-    100% { 
-        transform: scale(1); 
-        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
-    }
-}
+/* Removed unused click animation keyframes */
 
 .score-popup {
     position: fixed;
