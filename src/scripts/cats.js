@@ -21,7 +21,7 @@ class CatManager {
         
         // Add the cat image
         cat.innerHTML = `
-            <img src="assets/cat.svg" alt="Clickable Cat" 
+            <img src="assets/cat.png" alt="Clickable Cat" 
                  width="200" height="200" 
                  draggable="false">
         `;
