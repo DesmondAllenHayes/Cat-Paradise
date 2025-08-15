@@ -52,17 +52,19 @@ body {
 }
 
 .game-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 60vh;
     position: relative;
+    min-height: 60vh;
+    width: 100%;
 }
 
 .cat-container {
     cursor: pointer;
     transition: transform 0.2s ease;
-    position: relative;
+    position: absolute;
+    /* Position the cat on the table - adjust these values to match your background */
+    left: 50%;
+    top: 60%;
+    transform: translateX(-50%);
 }
 
 .cat-container:hover {
