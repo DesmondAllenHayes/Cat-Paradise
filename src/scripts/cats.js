@@ -59,6 +59,11 @@ class CatManager {
     }
 
     animateClick(cat) {
+        // Play click sound
+        if (this.clickSound) {
+            this.clickSound.currentTime = 0;
+            this.clickSound.play();
+        }
         const catImg = cat.querySelector('img');
         
         // Remove the class first to reset the animation
