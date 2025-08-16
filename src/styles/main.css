@@ -74,6 +74,58 @@ body {
     pointer-events: none;
 }
 
+.cat-star {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 60px;
+    height: 60px;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.cat-star1 {
+    opacity: 0.7;
+    animation: star-rotate-slow 3s linear infinite;
+}
+
+.cat-star2 {
+    width: 40px;
+    height: 40px;
+    opacity: 0.4;
+    animation: star-rotate-fast 1.5s linear infinite;
+}
+
+.cat-star::before, .cat-star::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 100%);
+    border-radius: 2px;
+    transform: translate(-50%, -50%);
+}
+
+.cat-star::before {
+    width: 60%;
+    height: 8px;
+}
+
+.cat-star::after {
+    width: 8px;
+    height: 60%;
+}
+
+.cat-star2::before {
+    width: 40%;
+    height: 5px;
+}
+.cat-star2::after {
+    width: 5px;
+    height: 40%;
+}
+
 /* Removed the large radial gradient overlay */
 
 .cat img {
@@ -149,6 +201,16 @@ body {
     0% { opacity: 0; }
     50% { opacity: 0.5; }
     100% { opacity: 0; }
+}
+
+@keyframes star-rotate-slow {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes star-rotate-fast {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /* Removed cat-hover-bounce animation for statue-like feel */

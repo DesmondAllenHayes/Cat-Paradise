@@ -27,6 +27,8 @@ class CatManager {
             <img src="assets/cat.png" alt="Clickable Cat" 
                  width="200" height="200" 
                  draggable="false">
+            <div class="cat-star cat-star1"></div>
+            <div class="cat-star cat-star2"></div>
         `;
         
         // Make the cat look clickable
