@@ -96,9 +96,10 @@ body {
     filter: brightness(1.1) contrast(1.2);
 }
 
-/* Click animation handled by JavaScript */
-
-/* Removed unused click animation keyframes */
+/* Click animation */
+.cat-clicked img {
+    animation: click-bounce 0.3s ease;
+}
 
 .score-popup {
     position: fixed;
@@ -119,9 +120,18 @@ body {
 
 /* Animations */
 @keyframes click-bounce {
-    0% { transform: scale(1); }
-    50% { transform: scale(0.95); }
-    100% { transform: scale(1); }
+    0% { 
+        transform: scale(1); 
+        filter: brightness(1.1) contrast(1.2);
+    }
+    50% { 
+        transform: scale(0.9); 
+        filter: brightness(1.2) contrast(1.3);
+    }
+    100% { 
+        transform: scale(1); 
+        filter: brightness(1.1) contrast(1.2);
+    }
 }
 
 @keyframes float-up {

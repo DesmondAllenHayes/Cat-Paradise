@@ -1,0 +1,10 @@
+[33m9623c7f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Fix pixel detection bugs - handle already loaded images and improve hover logic
+[33m8500f3f[m Implement pixel-perfect hover detection - only visible cat pixels trigger hover and click effects
+[33m7f81062[m Fix transparent PNG hover issue - disable pointer events on containers, enable only on image
+[33m4b43acd[m Fix hover selector - change from .cat:hover img to .cat img:hover for precise hover area
+[33mee39942[m Fix hover area - move all effects to cat img only, remove unused CSS
+[33me084eca[m Make only cat image interactive - remove container hover effects and cursor
+[33mb3c8e8f[m Remove large lighting square on hover - keep only cat statue lighting up
+[33m476644a[m Position cat statue on table in background - change from centered to absolute positioning
+[33mea66815[m Implement custom background image - replace gradient with Main Background.png
+[33m96ab100[m Remove bouncy animations for more statue-like feel - keep perking up and brightness effects

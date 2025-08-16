@@ -40,26 +40,34 @@ class CatManager {
             // Prevent any default browser behavior
             event.preventDefault();
             
-            // Check if clicking on visible pixel
-            if (this.isHovering) {
-                // Update the score
-                this.game.updateScore(1);
-                
-                // Increment click count
-                this.clickCount++;
-                
-                // Animate the click
-                this.animateClick(cat);
-                
-                // Check for click milestones
-                this.checkClickMilestones();
-            }
+            // Update the score
+            this.game.updateScore(1);
+            
+            // Increment click count
+            this.clickCount++;
+            
+            // Animate the click
+            this.animateClick(cat);
+            
+            // Check for click milestones
+            this.checkClickMilestones();
         });
     }
 
     animateClick(cat) {
+        const catImg = cat.querySelector('img');
+        
+        // Remove the class first to reset the animation
+        cat.classList.remove('cat-clicked');
+        
+        // Force a reflow to ensure the class removal is processed
+        cat.offsetHeight;
+        
         // Add the click animation class
         cat.classList.add('cat-clicked');
+        
+        // Show patted state
+        this.showPattedState(catImg);
         
         // Create a score popup
         this.createScorePopup(cat);
@@ -67,7 +75,7 @@ class CatManager {
         // Remove the animation class after animation completes
         setTimeout(() => {
             cat.classList.remove('cat-clicked');
-        }, 200);
+        }, 300);
     }
 
     createScorePopup(cat) {
@@ -191,6 +199,20 @@ class CatManager {
             catImg.src = 'assets/cat.png';
             catImg.style.transition = 'all 0.3s ease';
         }
+    }
+
+    showPattedState(catImg) {
+        // Show patted cat image
+        catImg.src = 'assets/cat-patted.png';
+        
+        // Return to perked state after a short delay
+        setTimeout(() => {
+            if (this.isHovering) {
+                catImg.src = 'assets/cat-perked.png';
+            } else {
+                catImg.src = 'assets/cat.png';
+            }
+        }, 200);
     }
 }
 
