@@ -8,6 +8,7 @@ class CatManager {
         this.catContainer = document.querySelector('.cat-container');
         this.clickCount = 0;
         this.isHovering = false;
+        this.isBeingPatted = false;
         
         this.init();
     }
@@ -112,12 +113,18 @@ class CatManager {
         // Simple hover in/out system
         cat.addEventListener('mouseenter', () => {
             this.isHovering = true;
-            this.startHoverAnimation(catImg, true);
+            // Only change state if not being patted
+            if (!this.isBeingPatted) {
+                this.startHoverAnimation(catImg, true);
+            }
         });
         
         cat.addEventListener('mouseleave', () => {
             this.isHovering = false;
-            this.startHoverAnimation(catImg, false);
+            // Only change state if not being patted
+            if (!this.isBeingPatted) {
+                this.startHoverAnimation(catImg, false);
+            }
         });
     }
 
@@ -134,17 +141,22 @@ class CatManager {
     }
 
     showPattedState(catImg) {
+        // Set patted flag to prevent hover state changes
+        this.isBeingPatted = true;
+        
         // Show patted cat image
         catImg.src = 'assets/cat-patted.png';
         
-        // Return to perked state after a short delay
+        // Stay in patted state for 1 second, then return to appropriate state
         setTimeout(() => {
+            this.isBeingPatted = false; // Clear patted flag
+            
             if (this.isHovering) {
                 catImg.src = 'assets/cat-perked.png';
             } else {
                 catImg.src = 'assets/cat.png';
             }
-        }, 200);
+        }, 1000);
     }
 }
 
