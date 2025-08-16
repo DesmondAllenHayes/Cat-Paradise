@@ -72,58 +72,55 @@ body {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     pointer-events: none;
+    width: 200px;
+    height: 200px;
 }
 
 .cat-star {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 60px;
-    height: 60px;
+    width: 400px;
+    height: 400px;
     pointer-events: none;
     transform: translate(-50%, -50%);
-    z-index: 1;
+    z-index: 0;
+    filter: blur(2px) drop-shadow(0 0 30px #fff8b0);
 }
 
 .cat-star1 {
     opacity: 0.7;
-    animation: star-rotate-slow 3s linear infinite;
+    animation: star-rotate-slow 7s linear infinite;
+    filter: blur(2.5px) drop-shadow(0 0 40px #fff8b0);
 }
 
 .cat-star2 {
-    width: 40px;
-    height: 40px;
+    width: 350px;
+    height: 350px;
     opacity: 0.4;
-    animation: star-rotate-fast 1.5s linear infinite;
+    animation: star-rotate-fast 4s linear infinite;
+    filter: blur(4px) drop-shadow(0 0 60px #ffe066);
 }
 
-.cat-star::before, .cat-star::after {
+.cat-star::before, .cat-star::after,
+.cat-star2::before, .cat-star2::after {
     content: '';
     position: absolute;
     left: 50%;
     top: 50%;
-    background: linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 100%);
-    border-radius: 2px;
+    background: linear-gradient(90deg, rgba(255,255,200,0) 0%, rgba(255,255,220,0.95) 50%, rgba(255,255,200,0) 100%);
+    border-radius: 16px;
     transform: translate(-50%, -50%);
 }
 
-.cat-star::before {
-    width: 60%;
-    height: 8px;
+.cat-star::before, .cat-star2::before {
+    width: 100%;
+    height: 60px;
 }
 
-.cat-star::after {
-    width: 8px;
-    height: 60%;
-}
-
-.cat-star2::before {
-    width: 40%;
-    height: 5px;
-}
-.cat-star2::after {
-    width: 5px;
-    height: 40%;
+.cat-star::after, .cat-star2::after {
+    width: 60px;
+    height: 100%;
 }
 
 /* Removed the large radial gradient overlay */
