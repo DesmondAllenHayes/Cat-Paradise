@@ -9,6 +9,7 @@ class CatManager {
         this.clickCount = 0;
         this.isHovering = false;
         this.isBeingPatted = false;
+        this.pattedTimer = null;
         
         this.init();
     }
@@ -141,6 +142,11 @@ class CatManager {
     }
 
     showPattedState(catImg) {
+        // Clear any existing patted timer to prevent state flashing
+        if (this.pattedTimer) {
+            clearTimeout(this.pattedTimer);
+        }
+        
         // Set patted flag to prevent hover state changes
         this.isBeingPatted = true;
         
@@ -148,8 +154,9 @@ class CatManager {
         catImg.src = 'assets/cat-patted.png';
         
         // Stay in patted state for 1 second, then return to appropriate state
-        setTimeout(() => {
+        this.pattedTimer = setTimeout(() => {
             this.isBeingPatted = false; // Clear patted flag
+            this.pattedTimer = null; // Clear timer reference
             
             if (this.isHovering) {
                 catImg.src = 'assets/cat-perked.png';
