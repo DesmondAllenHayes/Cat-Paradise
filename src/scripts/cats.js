@@ -10,9 +10,10 @@ class CatManager {
         this.isHovering = false;
         this.isBeingPatted = false;
         this.pattedTimer = null;
-        // Removed sound effect code
-        // this.clickSound = new Audio('assets/Click.mp3');
-        // this.clickSound.volume = 0.7;
+        
+        // Array to store click sound effects
+        this.clickSounds = [];
+        this.lastPlayedSound = null;
         
         // Canvas for analyzing image pixels
         this.canvas = null;
@@ -28,6 +29,42 @@ class CatManager {
 
     init() {
         this.createInitialCat();
+        this.initializeSounds();
+    }
+    
+    /**
+     * Initialize click sound effects by creating a pool of Audio objects.
+     * We create multiple Audio instances to allow overlapping sounds
+     * without cutting off previous ones.
+     * 
+     * @returns {void}
+     */
+    initializeSounds() {
+        // Create array of Audio objects for each sound
+        for (let i = 1; i <= 7; i++) {
+            const audio = new Audio(`assets/Audio/click-${i}.wav`);
+            audio.volume = 0.7;
+            this.clickSounds.push(audio);
+        }
+    }
+    
+    /**
+     * Play a random click sound from our pool of sounds.
+     * Ensures we don't play the same sound twice in a row
+     * for more variety in feedback.
+     * 
+     * @returns {void}
+     */
+    playRandomSound() {
+        let index;
+        do {
+            index = Math.floor(Math.random() * this.clickSounds.length);
+        } while (index === this.lastPlayedSound && this.clickSounds.length > 1);
+        
+        this.lastPlayedSound = index;
+        const sound = this.clickSounds[index];
+        sound.currentTime = 0; // Reset playback position
+        sound.play();
     }
 
     createInitialCat() {
@@ -78,11 +115,9 @@ class CatManager {
     }
 
     animateClick(cat, event) {
-        // Removed sound effect code
-        // if (this.clickSound) {
-        //     this.clickSound.currentTime = 0;
-        //     this.clickSound.play();
-        // }
+        // Play random click sound
+        this.playRandomSound();
+        
         const catImg = cat.querySelector('img');
         
         // Remove the class first to reset the animation

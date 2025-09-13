@@ -10,9 +10,9 @@
   - [x] Add click counter
   - [x] Implement basic scoring system
 - [ ] Cat interaction system
-  - [ ] Create own design for clickable cat
+  - [x] Create own design for clickable cat
   - [ ] Implement cat cooldown system
-  - [ ] Add click animations and feedback
+  - [x] Add click animations and feedback
   - [ ] Create unique text sound effects for cat clicks
 - [ ] Background and environment
   - [ ] Design and implement main background
