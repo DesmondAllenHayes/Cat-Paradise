@@ -76,6 +76,27 @@ body {
     height: 200px;
 }
 
+.cat-glow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 220px;
+    height: 220px;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(8px);
+    background: radial-gradient(circle, rgba(255,255,200,0.5) 0%, rgba(255,255,200,0.15) 60%, rgba(255,255,200,0) 100%);
+    -webkit-mask-image: url('../assets/cat.png');
+    -webkit-mask-size: 200px 200px;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-image: url('../assets/cat.png');
+    mask-size: 200px 200px;
+    mask-repeat: no-repeat;
+    mask-position: center;
+}
+
 .cat-star {
     position: absolute;
     left: 50%;
@@ -125,6 +146,10 @@ body {
 
 /* Removed the large radial gradient overlay */
 
+.cat {
+    position: relative;
+}
+
 .cat img {
     user-select: none;
     -webkit-user-drag: none;
@@ -135,15 +160,18 @@ body {
     pointer-events: auto;
     /* Ensure transparent areas don't interfere */
     mix-blend-mode: normal;
+    /* Simple outline for testing */
+    /* outline: 3px solid #00ff00; */
+    /* outline-offset: -3px; */
+    /* box-shadow: 0 0 15px #00ff00; */
 }
 
-/* Hover effects moved to cat img only */
 
-/* Removed hover effect for the removed pseudo-element */
-
-.cat img:hover {
+/* Hover effects are now handled by JavaScript for pixel-perfect detection */
+.cat img.hovering {
     filter: brightness(1.1) contrast(1.2);
 }
+
 
 /* Click animation */
 .cat-clicked img {

@@ -10,6 +10,14 @@ class CatManager {
         this.isHovering = false;
         this.isBeingPatted = false;
         this.pattedTimer = null;
+        // Removed sound effect code
+        // this.clickSound = new Audio('assets/Click.mp3');
+        // this.clickSound.volume = 0.7;
+        
+        // Canvas for analyzing image pixels
+        this.canvas = null;
+        this.ctx = null;
+        this.imageDataCache = new Map();
         
         this.init();
     }
@@ -24,26 +32,28 @@ class CatManager {
         
         // Add the shine stars BEFORE the cat image so they are behind it
         cat.innerHTML = `
-            <div class="cat-star cat-star1"></div>
-            <div class="cat-star cat-star2"></div>
-            <img src="assets/cat.png" alt="Clickable Cat" 
+            <div class="cat-glow"></div>
+            <img class="cat-img" src="assets/cat.png" alt="Clickable Cat" 
                  width="200" height="200" 
                  draggable="false">
         `;
         
-        // Make the cat look clickable
-        cat.style.cursor = 'pointer';
-        
         this.catContainer.appendChild(cat);
+        
         this.setupCatClickHandler(cat);
         this.setupCatHoverHandler(cat);
     }
 
     setupCatClickHandler(cat) {
-        cat.addEventListener('click', (event) => {
-            // Prevent any default browser behavior
-            event.preventDefault();
+        const catImg = cat.querySelector('img');
+        
+        // Click detection with pixel-perfect alpha checking
+        catImg.addEventListener('click', (event) => {
             
+            // Pixel detection enabled
+            const enablePixelDetection = true;
+            
+            if (!enablePixelDetection || this.isClickOnValidPixel(event, catImg)) {
             // Update the score
             this.game.updateScore(1);
             
@@ -55,15 +65,16 @@ class CatManager {
             
             // Check for click milestones
             this.checkClickMilestones();
+            }
         });
     }
 
     animateClick(cat) {
-        // Play click sound
-        if (this.clickSound) {
-            this.clickSound.currentTime = 0;
-            this.clickSound.play();
-        }
+        // Removed sound effect code
+        // if (this.clickSound) {
+        //     this.clickSound.currentTime = 0;
+        //     this.clickSound.play();
+        // }
         const catImg = cat.querySelector('img');
         
         // Remove the class first to reset the animation
@@ -118,37 +129,62 @@ class CatManager {
     setupCatHoverHandler(cat) {
         const catImg = cat.querySelector('img');
         
-        // Simple hover in/out system
-        cat.addEventListener('mouseenter', () => {
+        // Hover detection with pixel-perfect alpha checking
+        catImg.addEventListener('mousemove', (event) => {
+            // Pixel detection enabled for hover
+            const enablePixelDetection = true;
+            const isValidPixel = !enablePixelDetection || this.isClickOnValidPixel(event, catImg);
+            
+            // Set cursor based on pixel validity
+            catImg.style.cursor = isValidPixel ? 'pointer' : 'default';
+            
+            if (isValidPixel && !this.isHovering) {
             this.isHovering = true;
-            // Only change state if not being patted
             if (!this.isBeingPatted) {
                 this.startHoverAnimation(catImg, true);
+                }
+                // (visual feedback removed)
+            } else if (!isValidPixel && this.isHovering) {
+                this.isHovering = false;
+                if (!this.isBeingPatted) {
+                    this.startHoverAnimation(catImg, false);
+                }
+                // (visual feedback removed)
+            } else if (!isValidPixel) {
+                // (visual feedback removed)
             }
         });
         
-        cat.addEventListener('mouseleave', () => {
+        catImg.addEventListener('mouseleave', () => {
             this.isHovering = false;
-            // Only change state if not being patted
             if (!this.isBeingPatted) {
                 this.startHoverAnimation(catImg, false);
             }
+            // Reset cursor when leaving image
+            catImg.style.cursor = 'default';
         });
     }
 
     startHoverAnimation(catImg, isHovering) {
+        const cat = catImg.parentElement;
         if (isHovering) {
             // Change to perked up cat image
             catImg.src = 'assets/cat-perked.png';
+            cat.setAttribute('data-state', 'perked');
+            catImg.classList.add('hovering');
             catImg.style.transition = 'all 0.3s ease';
         } else {
             // Return to normal cat image
             catImg.src = 'assets/cat.png';
+            cat.setAttribute('data-state', 'normal');
+            catImg.classList.remove('hovering');
             catImg.style.transition = 'all 0.3s ease';
         }
     }
 
     showPattedState(catImg) {
+        const cat = catImg.parentElement;
+        
         // Clear any existing patted timer to prevent state flashing
         if (this.pattedTimer) {
             clearTimeout(this.pattedTimer);
@@ -159,6 +195,7 @@ class CatManager {
         
         // Show patted cat image
         catImg.src = 'assets/cat-patted.png';
+        cat.setAttribute('data-state', 'patted');
         
         // Stay in patted state for 1 second, then return to appropriate state
         this.pattedTimer = setTimeout(() => {
@@ -167,11 +204,72 @@ class CatManager {
             
             if (this.isHovering) {
                 catImg.src = 'assets/cat-perked.png';
+                cat.setAttribute('data-state', 'perked');
             } else {
                 catImg.src = 'assets/cat.png';
+                cat.setAttribute('data-state', 'normal');
             }
         }, 1000);
     }
+
+    /**
+     * Check if a click is on a valid (non-transparent) pixel using alpha detection
+     * @param {MouseEvent} event - The click event
+     * @param {HTMLImageElement} img - The image element
+     * @returns {boolean} - True if click is on a valid pixel
+     */
+    isClickOnValidPixel(event, img) {
+        try {
+            if (!img.complete || img.naturalWidth === 0) {
+                return true;
+            }
+
+            // Create canvas if it doesn't exist
+            if (!this.canvas) {
+                this.canvas = document.createElement('canvas');
+                this.ctx = this.canvas.getContext('2d');
+            }
+
+            // Set canvas size to match image
+            this.canvas.width = img.naturalWidth;
+            this.canvas.height = img.naturalHeight;
+
+            // Clear canvas first
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+            // Draw the image to canvas
+            this.ctx.drawImage(img, 0, 0);
+
+            // Get click position relative to the image
+            const rect = img.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            // Scale to image coordinates
+            const scaleX = img.naturalWidth / rect.width;
+            const scaleY = img.naturalHeight / rect.height;
+            
+            const pixelX = Math.floor(x * scaleX);
+            const pixelY = Math.floor(y * scaleY);
+
+            // Check bounds
+            if (pixelX < 0 || pixelX >= img.naturalWidth || pixelY < 0 || pixelY >= img.naturalHeight) {
+                return false;
+            }
+
+            // Get pixel data
+            const imageData = this.ctx.getImageData(pixelX, pixelY, 1, 1);
+            const alpha = imageData.data[3]; // Alpha channel
+
+            // Return true if pixel is not transparent (alpha > 0)
+            return alpha > 0;
+        } catch (error) {
+            // If there's an error, allow the click to prevent blocking
+            return true;
+        }
+    }
+
+
 }
 
 // Initialize cat manager when game is loaded
