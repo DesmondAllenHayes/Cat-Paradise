@@ -18,8 +18,12 @@ class CatManager {
         this.canvas = null;
         this.ctx = null;
         this.imageDataCache = new Map();
-        
+        this.opaquePixelMap = null; // 2D array of booleans for non-transparent pixels
+        this.imageWidth = 0;
+        this.imageHeight = 0;
+        this.hitboxExpansion = 25; // Fixed expansion in px
         this.init();
+        // Removed createHitboxSlider()
     }
 
     init() {
@@ -27,44 +31,48 @@ class CatManager {
     }
 
     createInitialCat() {
+        // Create a container div for the cat with expanded hitbox
         const cat = document.createElement('div');
         cat.classList.add('cat');
+        cat.style.position = 'relative';
+        cat.style.width = '220px'; // 200px image + 20px border
+        cat.style.height = '220px';
+        cat.style.display = 'flex';
+        cat.style.alignItems = 'center';
+        cat.style.justifyContent = 'center';
         
-        // Add the shine stars BEFORE the cat image so they are behind it
+        // Center the image inside the container
         cat.innerHTML = `
-            <div class="cat-glow"></div>
             <img class="cat-img" src="assets/cat.png" alt="Clickable Cat" 
                  width="200" height="200" 
-                 draggable="false">
+                 draggable="false"
+                 style="position: absolute; left: 10px; top: 10px;">
         `;
         
         this.catContainer.appendChild(cat);
+        const catImg = cat.querySelector('img');
+        // Precompute opaque pixel map when image loads
+        catImg.addEventListener('load', () => {
+            this.precomputeOpaquePixelMap(catImg);
+        });
         
         this.setupCatClickHandler(cat);
         this.setupCatHoverHandler(cat);
     }
 
+    // Removed createHitboxSlider()
+
     setupCatClickHandler(cat) {
+        // Attach to the container, not the image
         const catImg = cat.querySelector('img');
-        
-        // Click detection with pixel-perfect alpha checking
-        catImg.addEventListener('click', (event) => {
-            
+        cat.addEventListener('click', (event) => {
             // Pixel detection enabled
             const enablePixelDetection = true;
-            
-            if (!enablePixelDetection || this.isClickOnValidPixel(event, catImg)) {
-            // Update the score
-            this.game.updateScore(1);
-            
-            // Increment click count
-            this.clickCount++;
-            
-            // Animate the click
-            this.animateClick(cat);
-            
-            // Check for click milestones
-            this.checkClickMilestones();
+            if (!enablePixelDetection || this.isClickOnValidPixel(event, cat, catImg)) {
+                this.game.updateScore(1);
+                this.clickCount++;
+                this.animateClick(cat);
+                this.checkClickMilestones();
             }
         });
     }
@@ -130,10 +138,10 @@ class CatManager {
         const catImg = cat.querySelector('img');
         
         // Hover detection with pixel-perfect alpha checking
-        catImg.addEventListener('mousemove', (event) => {
+        cat.addEventListener('mousemove', (event) => {
             // Pixel detection enabled for hover
             const enablePixelDetection = true;
-            const isValidPixel = !enablePixelDetection || this.isClickOnValidPixel(event, catImg);
+            const isValidPixel = !enablePixelDetection || this.isClickOnValidPixel(event, cat, catImg);
             
             // Set cursor based on pixel validity
             catImg.style.cursor = isValidPixel ? 'pointer' : 'default';
@@ -155,7 +163,7 @@ class CatManager {
             }
         });
         
-        catImg.addEventListener('mouseleave', () => {
+        cat.addEventListener('mouseleave', () => {
             this.isHovering = false;
             if (!this.isBeingPatted) {
                 this.startHoverAnimation(catImg, false);
@@ -212,59 +220,81 @@ class CatManager {
         }, 1000);
     }
 
+    precomputeOpaquePixelMap(img) {
+        if (!this.canvas) {
+            this.canvas = document.createElement('canvas');
+            this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
+        }
+        this.canvas.width = img.naturalWidth;
+        this.canvas.height = img.naturalHeight;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.drawImage(img, 0, 0);
+        const imageData = this.ctx.getImageData(0, 0, img.naturalWidth, img.naturalHeight);
+        this.imageWidth = img.naturalWidth;
+        this.imageHeight = img.naturalHeight;
+        // Build a 2D boolean array: true if pixel is opaque
+        this.opaquePixelMap = [];
+        for (let y = 0; y < img.naturalHeight; y++) {
+            const row = [];
+            for (let x = 0; x < img.naturalWidth; x++) {
+                const idx = (y * img.naturalWidth + x) * 4;
+                row.push(imageData.data[idx + 3] > 0);
+            }
+            this.opaquePixelMap.push(row);
+        }
+    }
+
     /**
      * Check if a click is on a valid (non-transparent) pixel using alpha detection
      * @param {MouseEvent} event - The click event
      * @param {HTMLImageElement} img - The image element
      * @returns {boolean} - True if click is on a valid pixel
      */
-    isClickOnValidPixel(event, img) {
+    // Adjusted for container and expanded hitbox
+    isClickOnValidPixel(event, cat, img) {
         try {
             if (!img.complete || img.naturalWidth === 0) {
                 return true;
             }
-
-            // Create canvas if it doesn't exist
-            if (!this.canvas) {
-                this.canvas = document.createElement('canvas');
-                this.ctx = this.canvas.getContext('2d');
-            }
-
-            // Set canvas size to match image
-            this.canvas.width = img.naturalWidth;
-            this.canvas.height = img.naturalHeight;
-
-            // Clear canvas first
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-            // Draw the image to canvas
-            this.ctx.drawImage(img, 0, 0);
-
-            // Get click position relative to the image
-            const rect = img.getBoundingClientRect();
+            // Get click position relative to the container
+            const rect = cat.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
-
-            // Scale to image coordinates
-            const scaleX = img.naturalWidth / rect.width;
-            const scaleY = img.naturalHeight / rect.height;
-            
-            const pixelX = Math.floor(x * scaleX);
-            const pixelY = Math.floor(y * scaleY);
-
-            // Check bounds
-            if (pixelX < 0 || pixelX >= img.naturalWidth || pixelY < 0 || pixelY >= img.naturalHeight) {
-                return false;
+            // Now, the image is at (10, 10) in the container
+            const imgX = Math.floor(x - 10);
+            const imgY = Math.floor(y - 10);
+            // If inside image bounds, check pixel
+            if (
+                imgX >= 0 && imgX < img.naturalWidth &&
+                imgY >= 0 && imgY < img.naturalHeight
+            ) {
+                if (this.opaquePixelMap && this.opaquePixelMap[imgY] && this.opaquePixelMap[imgY][imgX]) {
+                    return true;
+                }
             }
-
-            // Get pixel data
-            const imageData = this.ctx.getImageData(pixelX, pixelY, 1, 1);
-            const alpha = imageData.data[3]; // Alpha channel
-
-            // Return true if pixel is not transparent (alpha > 0)
-            return alpha > 0;
+            // If not inside, or pixel is transparent, check for nearby opaque pixel
+            const border = this.hitboxExpansion;
+            if (this.opaquePixelMap) {
+                for (let dy = -border; dy <= border; dy++) {
+                    for (let dx = -border; dx <= border; dx++) {
+                        const nx = imgX + dx;
+                        const ny = imgY + dy;
+                        if (
+                            nx >= 0 && nx < this.imageWidth &&
+                            ny >= 0 && ny < this.imageHeight &&
+                            this.opaquePixelMap[ny][nx]
+                        ) {
+                            // Check Euclidean distance
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist <= border) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
         } catch (error) {
-            // If there's an error, allow the click to prevent blocking
             return true;
         }
     }
