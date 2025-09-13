@@ -71,13 +71,13 @@ class CatManager {
             if (!enablePixelDetection || this.isClickOnValidPixel(event, cat, catImg)) {
                 this.game.updateScore(1);
                 this.clickCount++;
-                this.animateClick(cat);
+                this.animateClick(cat, event);
                 this.checkClickMilestones();
             }
         });
     }
 
-    animateClick(cat) {
+    animateClick(cat, event) {
         // Removed sound effect code
         // if (this.clickSound) {
         //     this.clickSound.currentTime = 0;
@@ -97,8 +97,8 @@ class CatManager {
         // Show patted state
         this.showPattedState(catImg);
         
-        // Create a score popup
-        this.createScorePopup(cat);
+        // Create a score popup at the click position
+        this.createScorePopup(event);
         
         // Remove the animation class after animation completes
         setTimeout(() => {
@@ -106,16 +106,15 @@ class CatManager {
         }, 300);
     }
 
-    createScorePopup(cat) {
+    createScorePopup(event) {
         // Create a floating score element
         const popup = document.createElement('div');
         popup.classList.add('score-popup');
         popup.textContent = '+1';
         
-        // Position it at click location
-        const rect = cat.getBoundingClientRect();
-        popup.style.left = rect.left + rect.width / 2 + 'px';
-        popup.style.top = rect.top + rect.height / 2 + 'px';
+        // Position it at the exact mouse click location
+        popup.style.left = event.pageX + 'px';
+        popup.style.top = event.pageY + 'px';
         
         // Add it to the document
         document.body.appendChild(popup);
